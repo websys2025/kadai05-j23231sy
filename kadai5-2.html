@@ -1,21 +1,32 @@
 <html lang="ja">
 <head>
     <meta charset="utf-8">
-    <title>演習課題5-2：外部APIの呼び出しテスト</title>
+    <title>演習課題5-2：名言APIの呼び出し</title>
 </head>
 <body>
-    <h1 id="msg">何かのAPI</h1>
-    <form name="apiform"><p>
-        何かのフォーム：<input type="text" name="form_data">
-        <button type="button" id="btn1" onclick="some_api(this.form)">実行</button>
-    </p></form>
+    <h1 id="msg">今日の名言</h1>
+    <form name="apiform">
+        <button type="button" onclick="some_api()">実行</button>
+    </form>
     
-    <div id="result"></div>
+    <div id="result" style="margin-top:20px; font-size: 1.2em;"></div>
+
     <script>
-        async function some_api(myForm) {
-            // ここにコードを書く
-            document.getElementById("result").innerHTML += myForm.form_data.value+"<br />";
-            document.apiform.reset();
+        async function some_api() {
+            const url = "https://api.quotable.io/random";
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById("result").innerHTML = `
+                    <blockquote style="font-style: italic;">"${data.content}"</blockquote>
+                    <p>― ${data.author}</p>
+                `;
+            } catch (error) {
+                document.getElementById("result").innerHTML = "名言の取得に失敗しました。";
+                console.error(error);
+            }
         }
     </script>
 </body>
